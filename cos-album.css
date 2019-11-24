@@ -1,8 +1,6 @@
-﻿body{
-  margin: 0;
-  padding: 0;
-  background: #121212;
-}
+﻿/**
+ * album
+ */
 .photoBox{
   display: flex;
   flex-wrap: wrap;
@@ -14,13 +12,9 @@
   margin-bottom: 30px;
   padding-bottom: 30px;
 }
-.photoBox:last-child{
-  border-bottom: 0;
-  margin-bottom: 0;
-}
 .cover{
   width: 100%;
-  min-height: 700px;
+  height: 700px;
   display: flex;
   vertical-align: middle;
   background-position: left bottom !important;
@@ -52,7 +46,7 @@
 }
 .title{
   width: auto;
-  min-height: 87px;
+  height: auto;
   margin: auto;
   padding: 20px;
   border-radius: 10px;
@@ -87,4 +81,40 @@
   background: rgba(255,255,255,0.05);
   transform: scale(0.99);
   transition: all 0.15s;
+}
+
+body{
+  margin: 0;
+  padding: 0;
+  background: #121212;
+}
+
+/**
+ * common
+ */
+.album-comments{
+  width: 60%;
+  margin: auto;
+}
+
+/**
+ * mobile
+ */
+@media screen and (max-width: 768px){
+  .album-comments{
+    width: 90%;
+    margin: auto;
+  }
+  .cover{
+    height: 250px;
+  }
+  .title {
+    padding: 15px;
+    font-size: 2rem;
+  }
+  .btn-more {
+    width: 130px;
+    padding: 10px;
+    font-size: 1.5rem;
+  }
 }

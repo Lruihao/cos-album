@@ -3,11 +3,27 @@
   <head>
     <meta charset="UTF-8">
     <title>cos-album</title>
-    <!-- <meta name="viewport" content="width=device-width, initial-scale=1.0"> -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="icon.ico">
     <link rel="stylesheet" type="text/css" href="cos-album.css">
-    <script type="text/javascript" src="cos-album.js" defer></script>
+    <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
   </head>
   <body>
-    <!-- 你的其他内容，如评论等 -->
+    <div class="album-comments"></div>
+    <script>
+      new Valine({
+        el: '.album-comments',
+        verify: false,
+        notify: false,
+        appId: 'xxxxxxxxxxxxxxx',
+        appKey: 'xxxxxxxxxxxxxxx',
+        placeholder: 'just go go',
+        avatar: 'wavatar',
+        pageSize: 10,
+        lang: 'zh-cn'
+      });
+    </script>
+    <script type="text/javascript" src="cos-album.js"></script>
+    <script type="text/javascript" src="https://image.idealli.com/photoshow.js"></script>
   </body>
 </html>
