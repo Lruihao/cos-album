@@ -1,4 +1,4 @@
-﻿/**
+/**
  * album
  */
 .photoBox{
@@ -25,10 +25,15 @@
   height: 300px;
   margin-top: 15px;
 }
-.photo img{
+.photo>img{
   width: 100%;
   height: 216.3px;
   margin-bottom: 15px;
+  border-radius: 10px;
+}
+.photo img:hover{
+  transform: scale(1.05);
+  transition: all 1s;
 }
 .photo>span{
   display: block;
@@ -78,24 +83,36 @@
   margin: auto;
 }
 .btn-more:hover{
+  background: rgba(255,255,255,0.15);
+}
+.btn-more:active{
   background: rgba(255,255,255,0.05);
   transform: scale(0.99);
   transition: all 0.15s;
 }
 
+/**
+ * common
+ */
 body{
   margin: 0;
   padding: 0;
   background: #121212;
 }
-
-/**
- * common
- */
 .album-comments{
   width: 60%;
   margin: auto;
 }
+footer{
+  color: #999;
+  text-align: center;
+  margin: 20px;
+}
+footer>a{
+  color: #555;
+  text-decoration: none;
+}
+
 
 /**
  * mobile
@@ -108,11 +125,11 @@ body{
   .cover{
     height: 250px;
   }
-  .title {
+  .title{
     padding: 15px;
     font-size: 2rem;
   }
-  .btn-more {
+  .btn-more{
     width: 130px;
     padding: 10px;
     font-size: 1.5rem;

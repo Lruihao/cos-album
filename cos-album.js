@@ -1,19 +1,20 @@
-﻿//需要解析的騰訊云COS桶XML鏈接
-let xmlLink = "https://img-xxxxxx.cos.ap-chengdu.myqcloud.com";
-//添加相册到指定节点下，如: ".myalbum","#myalbum"，默认"body"
-let appendTo = "";
+//需要解析的騰訊云COS桶XML鏈接
+let xmlLink = "https://img-xxxxxxxx.cos.ap-chengdu.myqcloud.com";
+//可選解析相冊到某個節點,e.g. ".myalbum","#myalbum",默认"body"
+let prependTo = "";
 //顯示數目,整數
 let showNum = 8; 
-renderDom(xmlLink,appendTo);
+renderDom(xmlLink,prependTo);
 
 /**
  * 渲染DOM
  * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
+ * @param {String} prependTo 可選解析相冊到某個節點
  */
-function renderDom(xmlLink, appendTo){
+function renderDom(xmlLink, prependTo){
   let content = getContent(xmlLink);
   let cosAlbum = document.createElement("div");
-  let insert = document.querySelector(appendTo || "body");
+  let insert = document.querySelector(prependTo || "body");
   cosAlbum.className = "cos-album";
   for (let i = 0; i < content.length; i++) {
     //相册与封面
