@@ -3,8 +3,8 @@
 
 ## Step1
 ```html
-<link rel="stylesheet" type="text/css" href="cos-album.css">
-<script type="text/javascript" src="cos-album.js" async defer></script>
+<link rel="stylesheet" type="text/css" href="cos-album.min.css">
+<script type="text/javascript" src="cos-album.min.js"></script>
 ```
 
 ## Step2
