@@ -1,6 +1,10 @@
 /**
- * album
+ * Name       ：cos-album.css
+ * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊
+ * Updated on : 2020/9/28 21:57
+ * Author     : Lruihao http://lruihao.cn
  */
+
 .photoBox{
   display: flex;
   flex-wrap: wrap;
@@ -22,14 +26,18 @@
 }
 .photo{
   width: 350px;
-  height: 300px;
+  height: 350px;
   margin-top: 15px;
 }
 .photo>img{
   width: 100%;
-  height: 216.3px;
+  height: 262.5px;
   margin-bottom: 15px;
+  border: 0.5px solid white;
   border-radius: 10px;
+  object-fit: contain;
+  object-position: center;
+  background-color: #a0c1b8;
 }
 .photo img:hover{
   transform: scale(1.05);
@@ -38,7 +46,7 @@
 .photo>span{
   display: block;
   text-align: center;
-  height: 30px;
+  height: 24.7px;
   color: #fff;
   font-weight: bold;
   font-size: 1rem;
