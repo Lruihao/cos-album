@@ -1,4 +1,5 @@
 # cos-album
+[demo](https://github.com/Lruihao/cos-album-demo)
 
 ## Step1
 ```html
