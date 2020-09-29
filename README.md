@@ -11,7 +11,7 @@
 ```js
 <script type="text/javascript">
   new Cosalbum({
-    'xmlLink': 'https://img-1256932288.cos.ap-chengdu.myqcloud.com',
+    'xmlLink': 'https://img-xxxxxxxxxx.cos.ap-chengdu.myqcloud.com',
     'prependTo': '',
     'viewNum': 8
   });

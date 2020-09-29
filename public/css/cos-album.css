@@ -37,7 +37,7 @@
   border-radius: 10px;
   object-fit: contain;
   object-position: center;
-  background-color: #a0c1b8;
+  background-color: #a4bdb6;
 }
 .photo img:hover{
   transform: scale(1.05);
