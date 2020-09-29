@@ -58,7 +58,7 @@ Cosalbum = function Cosalbum() {
         btnMore.className = 'btn-more';
         btnMore.innerHTML = '加載更多';
         btnMore.addEventListener('click', function () {
-          _moreClick(this, content[i], xmlLink);
+          _moreClick(this, content[i], viewNum, xmlLink);
         });
         moreItem.appendChild(btnMore);
         photoBox.appendChild(moreItem);
@@ -143,9 +143,10 @@ Cosalbum = function Cosalbum() {
    * 獲取更多圖片
    * @param {Object} obj button對象本身
    * @param {Array} contentX 單個相冊的數組，相當於content[x]
+   * @param {Number} viewNum 每個相冊顯示的照片數目,默認: 8
    * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
    */
-  var _moreClick = function (obj, contentX, xmlLink) {
+  var _moreClick = function (obj, contentX, viewNum, xmlLink) {
     let photoBox = obj.parentNode.parentNode;
     let num = photoBox.childNodes.length - 1;
     let titleContent = contentX[0].url.slice(0, -1);
