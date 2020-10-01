@@ -3,8 +3,8 @@
 
 ## Step1
 ```html
-<link rel="stylesheet" type="text/css" href="cos-album.min.css">
-<script type="text/javascript" src="cos-album.min.js"></script>
+<link rel="stylesheet" type="text/css" href="cos-album.min.css?v=1.1.2">
+<script type="text/javascript" src="cos-album.min.js?v=1.1.2"></script>
 ```
 
 ## Step2
@@ -13,9 +13,18 @@
   new Cosalbum({
     'xmlLink': 'https://img-xxxxxxxxxx.cos.ap-chengdu.myqcloud.com',
     'prependTo': '',
-    'viewNum': 8
+    'viewNum': 4,
+    'imgUrl': '//img.lruihao.cn'
   });
 </script>
 ```
+
+## Params
+| param     | type   | description                       |
+| :-------- | :----- | :-------------------------------- |
+| xmlLink   | String | 需要解析的騰訊云COS桶XML鏈接        |
+| prependTo | String | 可選解析相冊到某個節點,默認: 'body' |
+| viewNum   | Number | 每個相冊顯示的照片數目,默認: 4      |
+| imgUrl    | String | 图片CDN链接 Since: 1.1.2           |
 
 > [**详细说明**](https://lruihao.cn/posts/cos-album.html)  
