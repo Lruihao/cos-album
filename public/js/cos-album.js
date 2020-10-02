@@ -1,8 +1,8 @@
 /**
  * Name       ：cos-album.js
- * Version    : 1.1.2
+ * Version    : 1.1.3
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊抽象類
- * Updated on : 2020/10/1 13:23
+ * Updated on : 2020/10/2 15:13
  * Author     : Lruihao http://lruihao.cn
  */
 
@@ -11,7 +11,7 @@ Cosalbum = function Cosalbum() {
   /**
    * 渲染DOM
    * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默认'body'
+   * @param {String} prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
    * @param {Number} viewNum 每個相冊顯示的照片數目,默認: 4
    * @param {String} imgUrl 图片CDN链接
    */
@@ -192,6 +192,7 @@ Cosalbum = function Cosalbum() {
     $img.addEventListener('dblclick', function () {
       let $copyNode = document.querySelector('.copy-node');
       $copyNode.value = imgUrl;
+      $copyNode.classList.add('show');
       $copyNode.select();
       try {
         document.execCommand('copy');
@@ -199,6 +200,9 @@ Cosalbum = function Cosalbum() {
         console.log('浏览器不支持此复制操作！');
       }
       console.log('复制成功！');
+      setTimeout(() => {
+        $copyNode.classList.remove('show');
+      }, 3000);
     });
   };
 
@@ -238,7 +242,7 @@ Cosalbum = function Cosalbum() {
    * Cosalbum 基於騰訊云COS桶的“動態”相冊
    * @param {Object} option 
    * @param {String} option.xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} option.prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默认'body'
+   * @param {String} option.prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
    * @param {Number} option.viewNum 每個相冊顯示的照片數目,默認: 4
    * @param {String} option.imgUrl 图片CDN链接
    * @namespace Cosalbum
@@ -256,6 +260,7 @@ Cosalbum = function Cosalbum() {
       //复制 imgUrl 的节点
       let $copyNode = document.createElement('input');
       $copyNode.className = 'copy-node';
+      $copyNode.setAttribute('readonly', 'readonly');
       document.body.appendChild($copyNode);
     }
     _renderDom(this.xmlLink, this.prependTo, this.viewNum, this.imgUrl);
