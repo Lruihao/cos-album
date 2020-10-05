@@ -1,8 +1,8 @@
 /**
  * Name       ：cos-album.js
- * Version    : 1.1.3
+ * Version    : 1.1.4
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊抽象類
- * Updated on : 2020/10/2 15:13
+ * Updated on : 2020/10/5 14:27
  * Author     : Lruihao http://lruihao.cn
  */
 
@@ -10,16 +10,17 @@ Cosalbum = function Cosalbum() {
 
   /**
    * 渲染DOM
-   * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
-   * @param {Number} viewNum 每個相冊顯示的照片數目,默認: 4
-   * @param {String} imgUrl 图片CDN链接
+   * @param {String} cosAlbum.xmlLink 需要解析的騰訊云COS桶XML鏈接
+   * @param {String} cosAlbum.prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
+   * @param {Number} cosAlbum.viewNum 每個相冊顯示的照片數目,默認: 4
+   * @param {String} cosAlbum.imgUrl 图片CDN链接
+   * @param {Object} cosAlbum CosAlbum.prototype
    */
-  var _renderDom = function (xmlLink, prependTo, viewNum, imgUrl) {
-    let content = _getContent(xmlLink);
-    let cosAlbum = document.createElement('div');
-    let insert = document.querySelector(prependTo || 'body');
-    cosAlbum.className = 'cos-album';
+  var _renderDom = function (cosAlbum) {
+    let content = _getContent(cosAlbum, cosAlbum.xmlLink);
+    let cosAlbumEle = document.createElement('div');
+    let insert = document.querySelector(cosAlbum.prependTo || 'body');
+    cosAlbumEle.className = 'cos-album';
     for (let i = 0; i < content.length; i++) {
       //相册与封面
       let $photoBox = document.createElement('div');
@@ -30,21 +31,21 @@ Cosalbum = function Cosalbum() {
       $title.className = 'title';
       $cover.appendChild($title);
       $cover.className = 'cover';
-      $cover.style.cssText = `background: url(${xmlLink}/${titleContent}/封面.jpg);`;
+      $cover.style.cssText = `background: url(${cosAlbum.xmlLink}/${titleContent}/封面.jpg);`;
       $photoBox.appendChild($cover);
       $photoBox.className = 'photoBox';
-      cosAlbum.appendChild($photoBox);
+      cosAlbumEle.appendChild($photoBox);
 
-      for (let j = 1; j < content[i].length && j < viewNum + 1; j++) {
+      for (let j = 1; j < content[i].length && j < cosAlbum.viewNum + 1; j++) {
         let $photo = document.createElement('div');
         let $img = document.createElement('img');
         let $desc = document.createElement('span');
         let $upDate = document.createElement('span');
         $photo.className = 'photo';
-        $img.setAttribute('src', `${xmlLink}/${titleContent}/${content[i][j].url}`);
+        $img.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${content[i][j].url}`);
         $img.setAttribute('alt', content[i][j].url);
-        if (imgUrl) {
-          _addCopyListener($img, `${imgUrl}/${titleContent}/${content[i][j].url}`);
+        if (cosAlbum.imgUrl) {
+          _addCopyListener($img, `${cosAlbum.imgUrl}/${titleContent}/${content[i][j].url}`, cosAlbum);
         }
         $desc.innerHTML = content[i][j].url.slice(0, -4);
         $upDate.innerHTML = _timeSince(content[i][j].date);
@@ -55,16 +56,16 @@ Cosalbum = function Cosalbum() {
         $photoBox.appendChild($photo);
       }
       //插入指定元素第一个子元素
-      insert.insertBefore(cosAlbum, insert.firstChild);
+      insert.insertBefore(cosAlbumEle, insert.firstChild);
 
-      if (content[i].length > viewNum) {
+      if (content[i].length > cosAlbum.viewNum) {
         let $moreItem = document.createElement('div');
         let $btnMore = document.createElement('button');
         $moreItem.className = 'more';
         $btnMore.className = 'btn-more';
         $btnMore.innerHTML = '加載更多';
         $btnMore.addEventListener('click', function () {
-          _moreClick(this, content[i], viewNum, xmlLink, imgUrl);
+          _moreClick(this, content[i], cosAlbum);
         });
         $moreItem.appendChild($btnMore);
         $photoBox.appendChild($moreItem);
@@ -75,12 +76,13 @@ Cosalbum = function Cosalbum() {
   /**
    * 獲取圖片的名稱和上傳日期
    * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
+   * @param {Object} cosAlbum CosAlbum.prototype
    * @return {Array} content 包含名稱和日期的二維數組，content[x][0]為單個相冊名稱
    */
-  var _getContent = function (xmlLink) {
-    xmlDoc = _loadXMLDoc(xmlLink);
-    let urls = xmlDoc.querySelectorAll('Key');
-    let date = xmlDoc.querySelectorAll('LastModified');
+  var _getContent = function (cosAlbum, xmlLink) {
+    cosAlbum.xmlDoc = _loadXMLDoc(xmlLink);
+    let urls = cosAlbum.xmlDoc.querySelectorAll('Key');
+    let date = cosAlbum.xmlDoc.querySelectorAll('LastModified');
     let photoBox = -1;
     let photo = 0;
     let content = new Array();
@@ -117,6 +119,7 @@ Cosalbum = function Cosalbum() {
    * @return {Object} xmlDoc XML文檔節點對象
    */
   var _loadXMLDoc = function (xmlUrl) {
+    let xmlDoc = {};
     try {
       //Internet Explorer
       xmlDoc = new ActiveXObject('Microsoft.XMLDOM');
@@ -149,26 +152,27 @@ Cosalbum = function Cosalbum() {
    * 獲取更多圖片
    * @param {Object} obj button對象本身
    * @param {Array} contentX 單個相冊的數組，相當於content[x]
-   * @param {Number} viewNum 每個相冊顯示的照片數目,默認: 4
-   * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} imgUrl 图片CDN链接
+   * @param {Number} cosAlbum.viewNum 每個相冊顯示的照片數目,默認: 4
+   * @param {String} cosAlbum.xmlLink 需要解析的騰訊云COS桶XML鏈接
+   * @param {String} cosAlbum.imgUrl 图片CDN链接
+   * @param {Object} cosAlbum CosAlbum.prototype
    */
-  var _moreClick = function (obj, contentX, viewNum, xmlLink, imgUrl) {
+  var _moreClick = function (obj, contentX, cosAlbum) {
     let $photoBox = obj.parentNode.parentNode;
     let num = $photoBox.childNodes.length - 1;
     let titleContent = contentX[0].url.slice(0, -1);
     $photoBox.removeChild(obj.parentNode);
-    for (let i = num; i < contentX.length && i < num + viewNum; i++) {
+    for (let i = num; i < contentX.length && i < num + cosAlbum.viewNum; i++) {
       let url = contentX[i].url;
       let $photo = document.createElement('div');
       let $img = document.createElement('img');
       let $desc = document.createElement('span');
       let $upDate = document.createElement('span');
       $photo.className = 'photo';
-      $img.setAttribute('src', `${xmlLink}/${titleContent}/${url}`);
+      $img.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${url}`);
       $img.setAttribute('alt', url);
-      if (imgUrl) {
-        _addCopyListener($img, `${imgUrl}/${titleContent}/${url}`);
+      if (cosAlbum.imgUrl) {
+        _addCopyListener($img, `${cosAlbum.imgUrl}/${titleContent}/${url}`, cosAlbum);
       }
       $desc.innerHTML = url.slice(0, -4);
       $upDate.innerHTML = _timeSince(contentX[i].date);
@@ -178,7 +182,7 @@ Cosalbum = function Cosalbum() {
       $photo.appendChild($upDate);
       $photoBox.appendChild($photo);
     }
-    if (contentX.length > num + viewNum) {
+    if (contentX.length > num + cosAlbum.viewNum) {
       $photoBox.appendChild(obj.parentNode);
     }
   };
@@ -188,10 +192,13 @@ Cosalbum = function Cosalbum() {
    * @param {Element} $img 圖片DOM元素
    * @param {String} imgUrl 圖片地址
    */
-  var _addCopyListener = function ($img, imgUrl) {
+  var _addCopyListener = function ($img, imgUrl, cosAlbum) {
     $img.addEventListener('dblclick', function () {
       let $copyNode = document.querySelector('.copy-node');
       $copyNode.value = imgUrl;
+      if (cosAlbum.TimeoutShow) {
+        clearTimeout(cosAlbum.TimeoutShow);
+      }
       $copyNode.classList.add('show');
       $copyNode.select();
       try {
@@ -200,7 +207,7 @@ Cosalbum = function Cosalbum() {
         console.log('浏览器不支持此复制操作！');
       }
       console.log('复制成功！');
-      setTimeout(() => {
+      cosAlbum.TimeoutShow = setTimeout(() => {
         $copyNode.classList.remove('show');
       }, 3000);
     });
@@ -269,7 +276,7 @@ Cosalbum = function Cosalbum() {
       $copyNode.setAttribute('readonly', 'readonly');
       document.body.appendChild($copyNode);
     }
-    _renderDom(this.xmlLink, this.prependTo, this.viewNum, this.imgUrl);
+    _renderDom(this);
   }
   return Cosalbum;
 }();
