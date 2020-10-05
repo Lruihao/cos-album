@@ -2,7 +2,7 @@
  * Name       ：cos-album.js
  * Version    : 1.1.4
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊抽象類
- * Updated on : 2020/10/5 14:27
+ * Updated on : 2020/10/5 20:03
  * Author     : Lruihao http://lruihao.cn
  */
 
@@ -252,6 +252,24 @@ Cosalbum = function Cosalbum() {
   };
 
   /**
+   * 创建 Powered By cos-album
+   */
+  var _createPowerEle = () => {
+    let cosAlbumEle = document.querySelector('.cos-album');
+    let caPowerEle = document.createElement('div');
+    let caPowerLink = document.createElement('a');
+    caPowerLink.href = 'https://github.com/Lruihao/cos-album';
+    caPowerLink.target = '_blank';
+    caPowerLink.innerHTML = 'cos-album';
+    caPowerEle.className = 'capower';
+    console.log(caPowerLink);
+    caPowerEle.innerHTML = 'Powered By ';
+    caPowerEle.appendChild(caPowerLink);
+    caPowerEle.innerHTML += '<br/>v1.1.4';
+    cosAlbumEle.appendChild(caPowerEle);
+  };
+
+  /**
    * Cosalbum 基於騰訊云COS桶的“動態”相冊
    * @param {Object} option 
    * @param {String} option.xmlLink 需要解析的騰訊云COS桶XML鏈接
@@ -277,6 +295,7 @@ Cosalbum = function Cosalbum() {
       document.body.appendChild($copyNode);
     }
     _renderDom(this);
+    _createPowerEle();
   }
   return Cosalbum;
 }();
