@@ -111,10 +111,11 @@
   width: 300px;
   margin: 0 1rem 1rem;
   font-size: 20px;
-  height: 30px;
+  height: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  padding: 0 5px 0;
+  padding: 3px 3px 4px;
+  outline: none;
 }
 .show{
   animation: show 3s linear;
