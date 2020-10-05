@@ -3,8 +3,8 @@
 
 ## Step1
 ```html
-<link rel="stylesheet" type="text/css" href="cos-album.min.css?v=1.1.3">
-<script type="text/javascript" src="cos-album.min.js?v=1.1.3"></script>
+<link rel="stylesheet" type="text/css" href="cos-album.min.css?v=1.1.4">
+<script type="text/javascript" src="cos-album.min.js?v=1.1.4"></script>
 ```
 
 ## Step2
@@ -14,7 +14,7 @@
     'xmlLink': 'https://img-xxxxxxxxxx.cos.ap-chengdu.myqcloud.com',
     'prependTo': '',
     'viewNum': 4,
-    'imgUrl': '//img.lruihao.cn'
+    'imgUrl': 'https://img.lruihao.cn'
   });
 </script>
 ```

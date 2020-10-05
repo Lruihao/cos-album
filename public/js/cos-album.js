@@ -217,13 +217,19 @@ Cosalbum = function Cosalbum() {
       return;
     }
     let dateTS = new Date(date.replace(/-/g, '/'));
-    let seconds = Math.floor((new Date() - dateTS) / 1000);
-    let interval = Math.floor(seconds / 31536000);
-    interval = Math.floor(seconds / 2592000);
-    interval = Math.floor(seconds / 86400);
+    let seconds = Math.floor((new Date() - dateTS) / 1000 - 8 * 3600);
+    let interval = Math.floor(seconds / (30 * 24 * 3600));
     if (interval >= 4) {
       return date.slice(0, -3);
     }
+    if (interval >= 1) {
+      return interval + " 月前";
+    }
+    interval = Math.floor(seconds / (7 * 24 * 3600));
+    if (interval >= 1) {
+      return interval + " 週前";
+    }
+    interval = Math.floor(seconds / (24 * 3600));
     if (interval >= 1) {
       return interval + " 天前";
     }
