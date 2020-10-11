@@ -1,8 +1,8 @@
 /**
  * Name       ：cos-album.js
- * Version    : 1.1.4
+ * Version    : 1.1.5
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊抽象類
- * Updated on : 2020/10/5 20:03
+ * Updated on : 2020/10/11 9:53
  * Author     : Lruihao http://lruihao.cn
  */
 
@@ -35,7 +35,6 @@ Cosalbum = function Cosalbum() {
       $photoBox.appendChild($cover);
       $photoBox.className = 'photoBox';
       cosAlbumEle.appendChild($photoBox);
-
       for (let j = 1; j < content[i].length && j < cosAlbum.viewNum + 1; j++) {
         let $photo = document.createElement('div');
         let $img = document.createElement('img');
@@ -57,7 +56,6 @@ Cosalbum = function Cosalbum() {
       }
       //插入指定元素第一个子元素
       insert.insertBefore(cosAlbumEle, insert.firstChild);
-
       if (content[i].length > cosAlbum.viewNum) {
         let $moreItem = document.createElement('div');
         let $btnMore = document.createElement('button');
@@ -72,7 +70,6 @@ Cosalbum = function Cosalbum() {
       }
     }
   };
-
   /**
    * 獲取圖片的名稱和上傳日期
    * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
@@ -112,7 +109,6 @@ Cosalbum = function Cosalbum() {
     }
     return content;
   };
-
   /**
    * 加載XML
    * @param {String} xmlLink 需要解析的騰訊云COS桶XML鏈接
@@ -147,7 +143,6 @@ Cosalbum = function Cosalbum() {
     }
     return xmlDoc;
   };
-
   /**
    * 獲取更多圖片
    * @param {Object} obj button對象本身
@@ -186,7 +181,6 @@ Cosalbum = function Cosalbum() {
       $photoBox.appendChild(obj.parentNode);
     }
   };
-
   /**
    * 雙擊複製圖片鏈接
    * @param {Element} $img 圖片DOM元素
@@ -212,7 +206,6 @@ Cosalbum = function Cosalbum() {
       }, 3000);
     });
   };
-
   /**
    * 將時間字串轉換為時間差距字串，如：1小時之前、50秒之前等
    * @param {String} date 時間字串
@@ -250,11 +243,11 @@ Cosalbum = function Cosalbum() {
     }
     return "剛剛";
   };
-
   /**
    * 创建 Powered By cos-album
+   * @param {String} version 版本号
    */
-  var _createPowerEle = () => {
+  var _createPowerEle = (version) => {
     let cosAlbumEle = document.querySelector('.cos-album');
     let caPowerEle = document.createElement('div');
     let caPowerLink = document.createElement('a');
@@ -262,10 +255,9 @@ Cosalbum = function Cosalbum() {
     caPowerLink.target = '_blank';
     caPowerLink.innerHTML = 'cos-album';
     caPowerEle.className = 'capower';
-    console.log(caPowerLink);
     caPowerEle.innerHTML = 'Powered By ';
     caPowerEle.appendChild(caPowerLink);
-    caPowerEle.innerHTML += '<br/>v1.1.4';
+    caPowerEle.innerHTML += `<br/>v${version}`;
     cosAlbumEle.appendChild(caPowerEle);
   };
 
@@ -282,11 +274,12 @@ Cosalbum = function Cosalbum() {
    */
   function Cosalbum(option) {
     var _proto = Cosalbum.prototype;
+    this.version = '1.1.5';
     this.option = option || {};
-    this.xmlLink = option.xmlLink || '';
-    this.prependTo = option.prependTo || 'body';
-    this.viewNum = option.viewNum || 4;
-    this.imgUrl = option.imgUrl || '';
+    this.xmlLink = this.option.xmlLink || '';
+    this.prependTo = this.option.prependTo || 'body';
+    this.viewNum = this.option.viewNum || 4;
+    this.imgUrl = this.option.imgUrl || '';
     if (this.imgUrl) {
       //复制 imgUrl 的节点
       let $copyNode = document.createElement('input');
@@ -295,7 +288,7 @@ Cosalbum = function Cosalbum() {
       document.body.appendChild($copyNode);
     }
     _renderDom(this);
-    _createPowerEle();
+    _createPowerEle(this.version);
   }
   return Cosalbum;
 }();

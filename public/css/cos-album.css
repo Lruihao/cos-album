@@ -1,11 +1,11 @@
+@charset "utf-8";
 /**
  * Name       ：cos-album.css
- * Version    : 1.1.4
+ * Version    : 1.1.5
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊樣式表
- * Updated on : 2020/10/5 20:03
+ * Updated on : 2020/10/11 10:01
  * Author     : Lruihao http://lruihao.cn
  */
-@charset "utf-8";
 
 .photoBox{
   display: flex;
