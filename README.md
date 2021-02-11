@@ -3,8 +3,8 @@
 
 ## Step1
 ```html
-<link rel="stylesheet" type="text/css" href="cos-album.min.css?v=1.1.5">
-<script type="text/javascript" src="cos-album.min.js?v=1.1.5"></script>
+<link rel="stylesheet" type="text/css" href="cos-album.min.css?v=1.1.6">
+<script type="text/javascript" src="cos-album.min.js?v=1.1.6"></script>
 ```
 
 ## Step2
@@ -14,7 +14,7 @@
     'xmlLink': 'https://img-xxxxxxxxxx.cos.ap-chengdu.myqcloud.com',
     'prependTo': '.cos-album',
     'viewNum': 8,
-    'imgUrl': 'https://img.lruihao.cn'
+    'copyUrl': 'https://img.lruihao.cn'
   });
 </script>
 ```
@@ -23,8 +23,10 @@
 | param     | type   | description                        |
 | :-------- | :----- | :--------------------------------- |
 | xmlLink   | String | 需要解析的騰訊云COS桶XML鏈接         |
-| prependTo | String | 可選解析相冊到某個節點,默認: 'body'   |
-| viewNum   | Number | 每個相冊顯示的照片數目,默認: 4        |
-| imgUrl    | String | 图片CDN链接,雙擊複製URL Since: 1.1.2 |
+| prependTo | String | 可選解析相冊到某個節點,默認: 'body'  |
+| viewNum   | Number | 每個相冊顯示的照片數目,默認: 4       |
+| copyUrl   | String | CDN 链接,雙擊複製 URL Since: 1.1.6  |
+| imgType   | String | 图片類型 Since: 1.1.6              |
+| videoType | String | 視頻類型 Since: 1.1.6              |
 
 > [**详细说明**](https://lruihao.cn/posts/cos-album.html)  
