@@ -1,8 +1,8 @@
 /**
  * Name       ：cos-album.js
- * Version    : 1.1.5
+ * Version    : 1.1.6
  * Description: Cosalbum 基於騰訊云COS桶的“動態”相冊抽象類
- * Updated on : 2020/10/11 9:53
+ * Updated on : 2021/2/11 13:14
  * Author     : Lruihao http://lruihao.cn
  */
 
@@ -11,17 +11,20 @@ Cosalbum = function Cosalbum() {
   /**
    * 渲染DOM
    * @param {String} cosAlbum.xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} cosAlbum.prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
-   * @param {Number} cosAlbum.viewNum 每個相冊顯示的照片數目,默認: 4
-   * @param {String} cosAlbum.imgUrl 图片CDN链接
+   * @param {String} [cosAlbum.prependTo='body'] 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum'
+   * @param {Number} [cosAlbum.viewNum=4] 每個相冊顯示的照片數目
+   * @param {String} [cosAlbum.imgUrl] 图片CDN链接
    * @param {Object} cosAlbum CosAlbum.prototype
    */
   var _renderDom = function (cosAlbum) {
     let content = _getContent(cosAlbum, cosAlbum.xmlLink);
-    let cosAlbumEle = document.createElement('div');
-    let insert = document.querySelector(cosAlbum.prependTo || 'body');
-    cosAlbumEle.className = 'cos-album';
+    let $cosAlbumEle = document.createElement('div');
+    let $insert = document.querySelector(cosAlbum.prependTo || 'body');
+    $cosAlbumEle.className = 'cos-album';
     for (let i = 0; i < content.length; i++) {
+      //反轉照片數組，倒敘排列,第一個元素為封面
+      content[i] = content[i].reverse();
+      content[i].unshift(content[i].pop());
       //相册与封面
       let $photoBox = document.createElement('div');
       let $cover = document.createElement('div');
@@ -34,8 +37,8 @@ Cosalbum = function Cosalbum() {
       $cover.style.cssText = `background: url(${cosAlbum.xmlLink}/${titleContent}/封面.jpg);`;
       $photoBox.appendChild($cover);
       $photoBox.className = 'photoBox';
-      cosAlbumEle.appendChild($photoBox);
-      for (let j = 1; j < content[i].length && j < cosAlbum.viewNum + 1; j++) {
+      $cosAlbumEle.appendChild($photoBox);
+      for (let j = 1; j < content[i].length && j <= cosAlbum.viewNum; j++) {
         let $photo = document.createElement('div');
         let $img = document.createElement('img');
         let $desc = document.createElement('span');
@@ -55,7 +58,7 @@ Cosalbum = function Cosalbum() {
         $photoBox.appendChild($photo);
       }
       //插入指定元素第一个子元素
-      insert.insertBefore(cosAlbumEle, insert.firstChild);
+      $insert.insertBefore($cosAlbumEle, $insert.firstChild);
       if (content[i].length > cosAlbum.viewNum) {
         let $moreItem = document.createElement('div');
         let $btnMore = document.createElement('button');
@@ -86,12 +89,12 @@ Cosalbum = function Cosalbum() {
     for (let i = 0; i < urls.length; i++) {
       let info = urls[i].innerHTML;
       let upDate = date[i].innerHTML.slice(0, 19).replace(/T/g, ' ');
-      let length = info.indexOf('/');
-      if (length === -1) {
+      let slash = info.indexOf('/');
+      if (slash === -1) {
         //排除根目錄文件
         continue;
       }
-      if (length === info.length - 1) {
+      if (slash === info.length - 1) {
         //相冊目錄
         content[++photoBox] = new Array();
         content[photoBox][0] = {
@@ -102,7 +105,7 @@ Cosalbum = function Cosalbum() {
       } else {
         //相冊圖片
         content[photoBox][photo++] = {
-          'url': info.slice(length + 1),
+          'url': info.slice(slash + 1),
           'date': upDate
         };
       }
@@ -124,7 +127,7 @@ Cosalbum = function Cosalbum() {
         //Firefox, Mozilla, Opera, etc.
         xmlDoc = document.implementation.createDocument('', '', null);
       } catch (e) {
-        alert(e.message);
+        console.error(e.message);
       }
     }
     try {
@@ -138,7 +141,7 @@ Cosalbum = function Cosalbum() {
         chromeXml.send(null);
         xmlDoc = chromeXml.responseXML.documentElement;
       } catch (e) {
-        alert(e.message);
+        console.error(e.message);
       }
     }
     return xmlDoc;
@@ -198,7 +201,7 @@ Cosalbum = function Cosalbum() {
       try {
         document.execCommand('copy');
       } catch (err) {
-        console.log('浏览器不支持此复制操作！');
+        console.error('浏览器不支持此复制操作！');
       }
       console.log('复制成功！');
       cosAlbum.TimeoutShow = setTimeout(() => {
@@ -248,38 +251,40 @@ Cosalbum = function Cosalbum() {
    * @param {String} version 版本号
    */
   var _createPowerEle = (version) => {
-    let cosAlbumEle = document.querySelector('.cos-album');
-    let caPowerEle = document.createElement('div');
-    let caPowerLink = document.createElement('a');
-    caPowerLink.href = 'https://github.com/Lruihao/cos-album';
-    caPowerLink.target = '_blank';
-    caPowerLink.innerHTML = 'cos-album';
-    caPowerEle.className = 'capower';
-    caPowerEle.innerHTML = 'Powered By ';
-    caPowerEle.appendChild(caPowerLink);
-    caPowerEle.innerHTML += `<br/>v${version}`;
-    cosAlbumEle.appendChild(caPowerEle);
+    let $cosAlbumEle = document.querySelector('.cos-album');
+    let $caPowerEle = document.createElement('div');
+    let $caPowerLink = document.createElement('a');
+    $caPowerLink.href = 'https://github.com/Lruihao/cos-album';
+    $caPowerLink.target = '_blank';
+    $caPowerLink.innerHTML = 'cos-album';
+    $caPowerEle.className = 'capower';
+    $caPowerEle.innerHTML = 'Powered By ';
+    $caPowerEle.appendChild($caPowerLink);
+    $caPowerEle.innerHTML += `<br/>v${version}`;
+    $cosAlbumEle.appendChild($caPowerEle);
   };
 
   /**
    * Cosalbum 基於騰訊云COS桶的“動態”相冊
    * @param {Object} option 
    * @param {String} option.xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} option.prependTo 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum',默認'body'
-   * @param {Number} option.viewNum 每個相冊顯示的照片數目,默認: 4
-   * @param {String} option.imgUrl 图片CDN链接
+   * @param {String} [option.prependTo='body'] 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum'
+   * @param {Number} [option.viewNum=4] 每個相冊顯示的照片數目
+   * @param {String} [option.imgUrl] 图片CDN链接
+   * @param {String} [option.autoUpload] 自動上傳目錄
    * @namespace Cosalbum
    * @class Cosalbum
    * @author Lruihao http://lruihao.cn
    */
   function Cosalbum(option) {
     var _proto = Cosalbum.prototype;
-    this.version = '1.1.5';
+    this.version = '1.1.6';
     this.option = option || {};
     this.xmlLink = this.option.xmlLink || '';
     this.prependTo = this.option.prependTo || 'body';
     this.viewNum = this.option.viewNum || 4;
     this.imgUrl = this.option.imgUrl || '';
+    this.autoUpload = this.option.autoUpload || '';
     if (this.imgUrl) {
       //复制 imgUrl 的节点
       let $copyNode = document.createElement('input');
