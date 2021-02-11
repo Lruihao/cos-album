@@ -13,7 +13,9 @@ Cosalbum = function Cosalbum() {
    * @param {String} cosAlbum.xmlLink 需要解析的騰訊云COS桶XML鏈接
    * @param {String} [cosAlbum.prependTo='body'] 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum'
    * @param {Number} [cosAlbum.viewNum=4] 每個相冊顯示的照片數目
-   * @param {String} [cosAlbum.imgUrl] 图片CDN链接
+   * @param {String} [cosAlbum.copyUrl] 图片CDN链接
+   * @param {String} [option.imgType] 图片類型
+   * @param {String} [option.videoType] 音/視頻類型
    * @param {Object} cosAlbum CosAlbum.prototype
    */
   var _renderDom = function (cosAlbum) {
@@ -40,19 +42,28 @@ Cosalbum = function Cosalbum() {
       $cosAlbumEle.appendChild($photoBox);
       for (let j = 1; j < content[i].length && j <= cosAlbum.viewNum; j++) {
         let $photo = document.createElement('div');
-        let $img = document.createElement('img');
         let $desc = document.createElement('span');
         let $upDate = document.createElement('span');
+        let $media;
         $photo.className = 'photo';
-        $img.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${content[i][j].url}`);
-        $img.setAttribute('alt', content[i][j].url);
-        if (cosAlbum.imgUrl) {
-          _addCopyListener($img, `${cosAlbum.imgUrl}/${titleContent}/${content[i][j].url}`, cosAlbum);
+        let contentDetail = content[i][j].url.split('.');
+        if (cosAlbum.imgType.includes(contentDetail[1])) {
+          $media = document.createElement('img');
+          $media.setAttribute('alt', content[i][j].url);
+        } else if (cosAlbum.videoType.includes(contentDetail[1])) {
+          $media = document.createElement('video');
+          $media.setAttribute('controls', 'controls');
+        } else {
+          continue;
         }
-        $desc.innerHTML = content[i][j].url.slice(0, -4);
+        $media.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${content[i][j].url}`);
+        if (cosAlbum.copyUrl) {
+          _addCopyListener($media, `${cosAlbum.copyUrl}/${titleContent}/${content[i][j].url}`, cosAlbum);
+        }
+        $desc.innerHTML = $desc.title = contentDetail[0];
         $upDate.innerHTML = _timeSince(content[i][j].date);
         $upDate.title = content[i][j].date;
-        $photo.appendChild($img);
+        $photo.appendChild($media);
         $photo.appendChild($desc);
         $photo.appendChild($upDate);
         $photoBox.appendChild($photo);
@@ -151,8 +162,8 @@ Cosalbum = function Cosalbum() {
    * @param {Object} obj button對象本身
    * @param {Array} contentX 單個相冊的數組，相當於content[x]
    * @param {Number} cosAlbum.viewNum 每個相冊顯示的照片數目,默認: 4
-   * @param {String} cosAlbum.xmlLink 需要解析的騰訊云COS桶XML鏈接
-   * @param {String} cosAlbum.imgUrl 图片CDN链接
+   * @param {String} cosAlbum.xmlLink 需要解析的騰訊云 COS 桶 XML 鏈接
+   * @param {String} cosAlbum.copyUrl 複製圖片/音視頻的 CDN 链接
    * @param {Object} cosAlbum CosAlbum.prototype
    */
   var _moreClick = function (obj, contentX, cosAlbum) {
@@ -169,8 +180,8 @@ Cosalbum = function Cosalbum() {
       $photo.className = 'photo';
       $img.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${url}`);
       $img.setAttribute('alt', url);
-      if (cosAlbum.imgUrl) {
-        _addCopyListener($img, `${cosAlbum.imgUrl}/${titleContent}/${url}`, cosAlbum);
+      if (cosAlbum.copyUrl) {
+        _addCopyListener($img, `${cosAlbum.copyUrl}/${titleContent}/${url}`, cosAlbum);
       }
       $desc.innerHTML = url.slice(0, -4);
       $upDate.innerHTML = _timeSince(contentX[i].date);
@@ -185,14 +196,14 @@ Cosalbum = function Cosalbum() {
     }
   };
   /**
-   * 雙擊複製圖片鏈接
-   * @param {Element} $img 圖片DOM元素
-   * @param {String} imgUrl 圖片地址
+   * 雙擊複製圖片/音視頻鏈接
+   * @param {Element} $media 媒體 DOM 元素
+   * @param {String} copyUrl 複製圖片/音視頻的 CDN 链接
    */
-  var _addCopyListener = function ($img, imgUrl, cosAlbum) {
-    $img.addEventListener('dblclick', function () {
+  var _addCopyListener = function ($media, copyUrl, cosAlbum) {
+    $media.addEventListener('dblclick', function () {
       let $copyNode = document.querySelector('.copy-node');
-      $copyNode.value = imgUrl;
+      $copyNode.value = copyUrl;
       if (cosAlbum.TimeoutShow) {
         clearTimeout(cosAlbum.TimeoutShow);
       }
@@ -263,6 +274,19 @@ Cosalbum = function Cosalbum() {
     $caPowerEle.innerHTML += `<br/>v${version}`;
     $cosAlbumEle.appendChild($caPowerEle);
   };
+  /**
+   * 把字符串的文件後綴轉成數組
+   * @param {String} str 待轉化字符串
+   * @returns {Array|null} 轉化后的數組
+   */
+  var _str2Array = (str) => {
+    if (typeof (str) !== String && !Array.isArray(str)) {
+      return null;
+    }
+    if (!Array.isArray(str)) {
+      return str.split(',');
+    }
+  };
 
   /**
    * Cosalbum 基於騰訊云COS桶的“動態”相冊
@@ -270,8 +294,9 @@ Cosalbum = function Cosalbum() {
    * @param {String} option.xmlLink 需要解析的騰訊云COS桶XML鏈接
    * @param {String} [option.prependTo='body'] 可選解析相冊到某個節點,e.g. '.myalbum','#myalbum'
    * @param {Number} [option.viewNum=4] 每個相冊顯示的照片數目
-   * @param {String} [option.imgUrl] 图片CDN链接
-   * @param {String} [option.autoUpload] 自動上傳目錄
+   * @param {String} [option.copyUrl] 複製圖片/音視頻的 CDN 链接
+   * @param {String} [option.imgType] 图片類型
+   * @param {String} [option.videoType] 音/視頻類型
    * @namespace Cosalbum
    * @class Cosalbum
    * @author Lruihao http://lruihao.cn
@@ -283,10 +308,11 @@ Cosalbum = function Cosalbum() {
     this.xmlLink = this.option.xmlLink || '';
     this.prependTo = this.option.prependTo || 'body';
     this.viewNum = this.option.viewNum || 4;
-    this.imgUrl = this.option.imgUrl || '';
-    this.autoUpload = this.option.autoUpload || '';
-    if (this.imgUrl) {
-      //复制 imgUrl 的节点
+    this.copyUrl = this.option.copyUrl || '';
+    this.imgType = _str2Array(this.option.imgType) || ['jpg', 'jpeg', 'png', 'gif', 'svg'];
+    this.videoType = _str2Array(this.option.videoType) || ['mp4', 'mp3', 'avi', 'mov', 'qt'];
+    if (this.copyUrl) {
+      //复制 copyUrl 的节点
       let $copyNode = document.createElement('input');
       $copyNode.className = 'copy-node';
       $copyNode.setAttribute('readonly', 'readonly');
