@@ -174,19 +174,28 @@ Cosalbum = function Cosalbum() {
     for (let i = num; i < contentX.length && i < num + cosAlbum.viewNum; i++) {
       let url = contentX[i].url;
       let $photo = document.createElement('div');
-      let $img = document.createElement('img');
       let $desc = document.createElement('span');
       let $upDate = document.createElement('span');
+      let $media;
       $photo.className = 'photo';
-      $img.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${url}`);
-      $img.setAttribute('alt', url);
-      if (cosAlbum.copyUrl) {
-        _addCopyListener($img, `${cosAlbum.copyUrl}/${titleContent}/${url}`, cosAlbum);
+      let contentDetail = url.split('.');
+      if (cosAlbum.imgType.includes(contentDetail[1])) {
+        $media = document.createElement('img');
+        $media.setAttribute('alt', url);
+      } else if (cosAlbum.videoType.includes(contentDetail[1])) {
+        $media = document.createElement('video');
+        $media.setAttribute('controls', 'controls');
+      } else {
+        continue;
       }
-      $desc.innerHTML = url.slice(0, -4);
+      $media.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${url}`);
+      if (cosAlbum.copyUrl) {
+        _addCopyListener($media, `${cosAlbum.copyUrl}/${titleContent}/${url}`, cosAlbum);
+      }
+      $desc.innerHTML = $desc.title = contentDetail[0];
       $upDate.innerHTML = _timeSince(contentX[i].date);
       $upDate.title = contentX[i].date;
-      $photo.appendChild($img);
+      $photo.appendChild($media);
       $photo.appendChild($desc);
       $photo.appendChild($upDate);
       $photoBox.appendChild($photo);
