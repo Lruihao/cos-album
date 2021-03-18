@@ -14,19 +14,19 @@
     'xmlLink': 'https://img-xxxxxxxxxx.cos.ap-chengdu.myqcloud.com',
     'prependTo': '.cos-album',
     'viewNum': 8,
-    'copyUrl': 'https://img.lruihao.cn'
+    'copyUrl': '//img.lruihao.cn'
   });
 </script>
 ```
 
 ## Params
-| param     | type   | description                        |
-| :-------- | :----- | :--------------------------------- |
-| xmlLink   | String | 需要解析的騰訊云COS桶XML鏈接         |
-| prependTo | String | 可選解析相冊到某個節點,默認: 'body'  |
-| viewNum   | Number | 每個相冊顯示的照片數目,默認: 4       |
-| copyUrl   | String | CDN 链接,雙擊複製 URL Since: 1.1.6  |
-| imgType   | String | 图片類型 Since: 1.1.6              |
-| videoType | String | 視頻類型 Since: 1.1.6              |
+| param     | type   | default | description                       |
+| :-------- | :----- | :------ | :-------------------------------- |
+| xmlLink   | String |         | 需要解析的騰訊云COS桶XML鏈接        |
+| prependTo | String | 'body'  | 可選解析相冊到某個節點              |
+| viewNum   | Number |   4     | 每個相冊顯示的照片數目              |
+| copyUrl   | String |  href   | CDN 链接,雙擊複製 URL Since: 1.1.6 |
+| imgType   | String | ['jpg', 'jpeg', 'png', 'gif', 'svg'] | 图片類型 Since: 1.1.6 |
+| videoType | String | ['mp4', 'mp3', 'avi', 'mov', 'qt']   | 視頻類型 Since: 1.1.6 |
 
 > [**详细说明**](https://lruihao.cn/posts/cos-album.html)  

@@ -41,12 +41,13 @@ Cosalbum = function Cosalbum() {
       $photoBox.className = 'photoBox';
       $cosAlbumEle.appendChild($photoBox);
       for (let j = 1; j < content[i].length && j <= cosAlbum.viewNum; j++) {
+        let url = content[i][j].url;
         let $photo = document.createElement('div');
         let $desc = document.createElement('span');
         let $upDate = document.createElement('span');
         let $media;
         $photo.className = 'photo';
-        let contentDetail = content[i][j].url.split('.');
+        let contentDetail = url.split('.');
         if (cosAlbum.imgType.includes(contentDetail[1])) {
           $media = document.createElement('img');
           $media.setAttribute('alt', content[i][j].url);
@@ -56,9 +57,9 @@ Cosalbum = function Cosalbum() {
         } else {
           continue;
         }
-        $media.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${content[i][j].url}`);
+        $media.setAttribute('src', `${cosAlbum.xmlLink}/${titleContent}/${url}`);
         if (cosAlbum.copyUrl) {
-          _addCopyListener($media, `${cosAlbum.copyUrl}/${titleContent}/${content[i][j].url}`, cosAlbum);
+          _addCopyListener($media, `${cosAlbum.copyUrl}/${titleContent}/${url}`, cosAlbum);
         }
         $desc.innerHTML = $desc.title = contentDetail[0];
         $upDate.innerHTML = _timeSince(content[i][j].date);
@@ -317,7 +318,7 @@ Cosalbum = function Cosalbum() {
     this.xmlLink = this.option.xmlLink || '';
     this.prependTo = this.option.prependTo || 'body';
     this.viewNum = this.option.viewNum || 4;
-    this.copyUrl = this.option.copyUrl || '';
+    this.copyUrl = this.option.copyUrl || window.location.href;
     this.imgType = _str2Array(this.option.imgType) || ['jpg', 'jpeg', 'png', 'gif', 'svg'];
     this.videoType = _str2Array(this.option.videoType) || ['mp4', 'mp3', 'avi', 'mov', 'qt'];
     if (this.copyUrl) {
